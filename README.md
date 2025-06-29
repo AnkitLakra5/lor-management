@@ -132,6 +132,92 @@ lor-management-system/
 - POST /api/admin/students
 - POST /api/admin/professors
 
-## License
+## System Architecture
 
-This project is licensed under the MIT License.
+### High-Level Architecture
+The system follows a three-tier architecture:
+1. **Presentation Layer**: React frontend
+2. **Application Layer**: Spring Boot REST API
+3. **Data Layer**: MySQL database
+
+### Component Diagram
+```
+Frontend (React + TypeScript)
+  ├── Components
+  ├── Services
+  └── Contexts
+         │
+         ▼
+Backend (Spring Boot)
+  ├── Controllers
+  ├── Services
+  └── Repositories
+         │
+         ▼
+Database (MySQL)
+  ├── Users
+  ├── LOR Requests
+  └── PDF Documents
+```
+
+## Database Schema
+
+### Entity Relationship Diagram
+```
+User ──┐
+       │
+       ├── LOR Request ── PDF Document
+       │
+Professor
+```
+
+### Key Tables
+- **users**: Stores user accounts with role information
+- **lor_requests**: Contains all LOR requests with details
+- **pdf_documents**: Stores generated PDF metadata
+- **admin_students**: Pre-verified student records
+- **admin_professors**: Pre-verified professor records
+
+## Security Implementation
+
+### Authentication Flow
+1. User submits credentials
+2. Server validates credentials
+3. JWT token generated with user role and expiration
+4. Token stored in client localStorage
+5. Token included in Authorization header for API requests
+
+### Authorization
+- Role-based access control (RBAC) implemented
+- Endpoints secured with Spring Security
+- Frontend routes protected with route guards
+
+## PDF Generation
+
+### Process
+1. Professor approves LOR request
+2. System generates unique reference number
+3. PDF created with iText library
+4. Document stored in secure file system
+5. Metadata saved in database
+6. Download link provided to student
+
+### Security Features
+- Reference number validation
+- Access control based on user role
+- Secure storage with restricted access
+
+## Deployment Guide
+
+### Production Setup
+1. Build frontend: `npm run build`
+2. Build backend: `mvn package`
+3. Configure production database
+4. Set up secure file storage
+5. Deploy with appropriate server configuration
+
+### Environment Variables
+- DATABASE_URL
+- JWT_SECRET
+- FILE_STORAGE_PATH
+- CORS_ALLOWED_ORIGINS
